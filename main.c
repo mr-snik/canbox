@@ -536,6 +536,8 @@ int main(void)
 
 				conf_read();
 
+				car_init(conf_get_car(), &key_cb);
+				
 				debug_on = 0;
 
 				wakeups++;
