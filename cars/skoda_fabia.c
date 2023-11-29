@@ -180,6 +180,18 @@ static void skoda_fabia_ms_taho_handler(const uint8_t * msg, struct msg_desc_t *
 	carstate.taho = (((uint16_t)msg[2]) << 8 | msg[1]) & 0xffff;
 	carstate.taho /= 4;
 }
+static void skoda_fabia_ms_volt_handle(const uint8_t * msg, struct msg_desc_t * desc)
+{
+	if (is_timeout(desc)) {
+
+		carstate.voltage = STATE_UNDEF;
+		return;
+	}
+
+	// 0x571 : a6 00 00 00 00 00 00 00
+	// 5 + (0.05 * 0xa6) = 13.3
+	carstate.voltage = 5 + (0.05 * msg[0]);
+}
 
 struct msg_desc_t skoda_fabia_ms[] =
 {
@@ -192,5 +204,6 @@ struct msg_desc_t skoda_fabia_ms[] =
 	{ 0x271, 100, 0, 0, skoda_fabia_ms_acc_handler },
 	{ 0x3e1, 200, 0, 0, skoda_fabia_ms_aircon_handler },
 	{ 0x353, 100, 0, 0, skoda_fabia_ms_taho_handler },
+	{ 0x353, 100, 0, 0, skoda_fabia_ms_volt_handler },
 };
 
